@@ -1,0 +1,69 @@
+---
+title: "Wolverine empirical example"
+author: "Cyril Milleret"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: references.bib
+vignette: >
+  %\VignetteIndexEntry{Wolverine empirical example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 7, fig.height = 7) 
+```
+
+In this vignette, we demonstrate how to use the nimbleSCR [@nimbleSCR] and NIMBLE packages [@de2017programming;@nimbleSoftware2020] to analyze spatial and cause-specific variation in mortality of wolverines from non-invasive genetic data and dead recoveries. 
+
+
+```{r, warning = FALSE, message = FALSE}
+## Load packages
+library(nimble)
+library(nimbleSCR)
+library(basicMCMCplots)
+```
+
+
+```{r,echo=T,eval=F, warning = FALSE, message = FALSE}
+#load functions 
+source("dbin_LESS_Cached_MultipleCovResponse.R")
+#load wolverine data and nimble code 
+load("WolverineData1.RData")
+```
+
+```{r,echo=F, warning = FALSE, message = FALSE}
+#load functions 
+source("C:/Personal_Cloud/OneDrive/Work/Rovquant/Papers/SpatialSurvivalRates/Simulations/gitHubFiles/OPSCRSpatialSurvivalEcology/dbin_LESS_Cached_MultipleCovResponse.R")
+#load wolverine data and nimble code 
+load("C:/Personal_Cloud/OneDrive/Work/Rovquant/Papers/SpatialSurvivalRates/Simulations/gitHubFiles/OPSCRSpatialSurvivalEcology/WolverineData.RData")
+```
+
+We can now set up the necessary nimble objects and run the MCMC.  
+```{r , eval=F, warning = FALSE, message = FALSE}
+#RUN NIMBLE MODEL (demonstration with single chain and low number of iterations)
+model <- nimbleModel( code = modelCode
+                      , constants = nimConstants
+                      , data = nimData
+                      , inits = nimInits
+                      , check = FALSE       
+                      , calculate = FALSE)
+model$calculate()# -103627
+cmodel <- compileNimble(model)
+cmodel$calculate()
+MCMCconf <- configureMCMC(model = model, monitors = c(nimParams),
+                          control = list(reflective = TRUE, adaptScaleOnly = TRUE),
+                          useConjugacy = FALSE) 
+MCMC <- buildMCMC(MCMCconf)
+cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
+Runtime <- system.time(myNimbleOutput <- runMCMC( mcmc = cMCMC
+                                                  , nburnin = 0
+                                                  , niter = 100
+                                                  , nchains = 1
+                                                  , samplesAsCodaMCMC = TRUE))
+
+```
+
+
+## REFERENCES
