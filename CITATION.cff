@@ -1,0 +1,6 @@
+cff-version: 1.1.0
+message: "If you use this data, please cite it as below."
+authors: Cyril Milleret1, Soumen Dey, Pierre Dupont, Henrik Brøseth, Daniel Turek, Perry de Valpine, Richard Bischof
+title: Data for: Estimating spatially variable and density-dependent survival using open-population spatial capture-recapture models; Ecology
+version: v1.0.0
+date-released: 2022-10-31
